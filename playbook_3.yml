@@ -1,0 +1,149 @@
+---
+
+### Configuring OSPFv2 on a Multi-access Network
+
+### First play
+
+- name: Configuring OSPFv2 on R1
+  hosts: R1
+  gather_facts: false
+  connection: local
+
+  tasks:
+
+### This task used to configure interfaces on router
+
+   - name: configure interfaces on R1
+     ios_config:
+       lines:
+         - description interface 
+         - ip address 10.10.{{ item.address }}.1 255.255.255.255
+         - no shutdown
+       parents: interface {{ item.name }}
+     with_items:
+         - { name: 'lo0', address: '10' }
+         - { name: 'lo1', address: '20' }
+         - { name: 'lo2', address: '30' }
+     tags: interfaceConfig
+
+### This task used to configure OSPF
+
+   - name: configure OSPF settings on R1
+     ios_config:
+       lines:
+         - router-id 1.1.1.1
+         - network 10.10.10.1 0.0.0.0 area 0
+         - network 10.10.20.1 0.0.0.0 area 0
+         - network 10.10.30.1 0.0.0.0 area 0
+       parents: router ospf {{ processid }}
+     tags: ospfConfig     
+
+### Second play
+
+- name: Configuring OSPFv2 on R2
+  hosts: R2
+  gather_facts: false
+  connection: local
+
+  tasks:
+
+### This task used to configure interfaces on router
+
+   - name: configure interfaces on R2
+     ios_config:
+       lines:
+         - description interface 
+         - ip address 10.20.{{ item.address }}.1 255.255.255.255
+         - no shutdown
+       parents: interface {{ item.name }}
+     with_items:
+         - { name: 'lo0', address: '10' }
+         - { name: 'lo1', address: '20' }
+         - { name: 'lo2', address: '30' }
+     tags: interfaceConfig
+
+### This task used to configure OSPF
+
+   - name: configure OSPF settings on R2
+     ios_config:
+       lines:
+         - router-id 2.2.2.2
+         - network 10.20.10.1 0.0.0.0 area 0
+         - network 10.20.20.1 0.0.0.0 area 0
+         - network 10.20.30.1 0.0.0.0 area 0
+       parents: router ospf {{ processid }}
+     tags: ospfConfig     
+
+### Third play
+
+- name: Configuring OSPFv2 on R3
+  hosts: R3
+  gather_facts: false
+  connection: local
+
+  tasks:
+
+### This task used to configure interfaces on router
+
+   - name: configure interfaces on R3
+     ios_config:
+       lines:
+         - description interface 
+         - ip address 10.30.{{ item.address }}.1 255.255.255.255
+         - no shutdown
+       parents: interface {{ item.name }}
+     with_items:
+         - { name: 'lo0', address: '10' }
+         - { name: 'lo1', address: '20' }
+         - { name: 'lo2', address: '30' }
+     tags: interfaceConfig
+
+### This task used to configure OSPF
+
+   - name: configure OSPF settings on R3
+     ios_config:
+       lines:
+         - router-id 3.3.3.3
+         - network 10.30.10.1 0.0.0.0 area 0
+         - network 10.30.20.1 0.0.0.0 area 0
+         - network 10.30.30.1 0.0.0.0 area 0
+       parents: router ospf {{ processid }}
+     tags: ospfConfig     
+
+### Fourth play
+
+- name: Configuring OSPFv2 on R4
+  hosts: R4
+  gather_facts: false
+  connection: local
+
+  tasks:
+
+### This task used to configure interfaces on router
+
+   - name: configure interfaces on R4
+     ios_config:
+       lines:
+         - description interface 
+         - ip address 10.40.{{ item.address }}.1 255.255.255.255
+         - no shutdown
+       parents: interface {{ item.name }}
+     with_items:
+         - { name: 'lo0', address: '10' }
+         - { name: 'lo1', address: '20' }
+         - { name: 'lo2', address: '30' }
+     tags: interfaceConfig
+
+### This task used to configure OSPF
+
+   - name: configure OSPF settings on R4
+     ios_config:
+       lines:
+         - router-id 4.4.4.4
+         - network 10.40.10.1 0.0.0.0 area 0
+         - network 10.40.20.1 0.0.0.0 area 0
+         - network 10.40.30.1 0.0.0.0 area 0
+       parents: router ospf {{ processid }}
+     tags: ospfConfig     
+
+    
