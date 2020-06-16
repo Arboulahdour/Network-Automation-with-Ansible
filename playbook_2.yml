@@ -1,0 +1,51 @@
+---
+- name: load configuration on Ansible Managed Nodes
+  hosts: Routers
+  gather_facts: false
+  connection: local
+
+  tasks:
+
+   - name: load the basic configurations
+     ios_config: 
+       lines:
+         - no ip domain-lookup
+         - service password-encryption
+         - service timestamps log datetime msec
+         - service timestamps debug datetime msec
+     tags: basicConf 
+
+   - name: configure the login banner
+     ios_banner:
+       banner: login
+       text: |
+         This is my login banner
+         that contains a multiline
+         string!!
+       state: present
+     tags: bannerConfig
+
+   - name: configure host logging
+     ios_logging:
+       dest: host
+       name: 192.168.99.254
+       state: present
+     tags: loggingConfig  
+
+   - name: configure users 
+     ios_user:
+       name: user1
+       privilege: 15
+       configured_password: "{{ user1pass }}"
+       update_password: always
+       state: present
+     tags: usersConfig  
+
+   - name: configure the router interfaces
+     ios_config:
+       lines:
+         - description LAN interface
+         - ip address 192.168.100.1 255.255.255.0
+         - no shutdown
+       parents: interface f0/1
+     tags: interfaceConfig
