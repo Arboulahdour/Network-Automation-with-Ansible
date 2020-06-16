@@ -1,0 +1,18 @@
+---
+- name: Get configuration and save it on Ansible Control Node
+  hosts: Routers
+  gather_facts: false
+  connection: local
+
+  tasks:
+   - name: Get running config from the Managed Node
+     ios_command:
+       commands:
+         - "show run"
+
+     register: show_run
+
+   - name: Save output to /home/netadmin/automation-tuto/
+     copy:
+       content: "{{ show_run.stdout[0] }}"
+       dest: "/home/netadmin/automation-tuto/show_run_{{ inventory_hostname }}.conf"
